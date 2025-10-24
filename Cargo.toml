@@ -7,7 +7,7 @@ license-file = "LICENSE"
 
 [dependencies]
 im = "15.1.0"
-flashlight = { git = "https://github.com/Colosseum1316/Flashlight.git", rev = "71666418492894fefae5885376bf2c02150be8d6" }
+flashlight = { git = "https://github.com/Colosseum1316/Flashlight.git", rev = "b425e06e12bba677eb8037273fa812ce91c16ce4" }
 hickory-resolver = "0.25.2"
 tokio = "1.45.1"
 clap = { version = "4.5.40", features = ["derive"] }

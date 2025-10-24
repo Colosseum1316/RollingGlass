@@ -258,7 +258,7 @@ dependencies = [
 [[package]]
 name = "flashlight"
 version = "0.0.1"
-source = "git+https://github.com/Colosseum1316/Flashlight.git?rev=71666418492894fefae5885376bf2c02150be8d6#71666418492894fefae5885376bf2c02150be8d6"
+source = "git+https://github.com/Colosseum1316/Flashlight.git?rev=b425e06e12bba677eb8037273fa812ce91c16ce4#b425e06e12bba677eb8037273fa812ce91c16ce4"
 
 [[package]]
 name = "form_urlencoded"
