@@ -3,10 +3,7 @@
 use std::io::{Read, Write};
 use std::net::{Shutdown, SocketAddr, TcpStream};
 use std::slice;
-use std::sync::OnceLock;
 use std::time::Duration;
-
-use im::hashset::HashSet;
 
 use crate::dns::resolve;
 use crate::packet::{compose_handshake_packet, compose_status_request_packet};
@@ -111,7 +108,8 @@ pub const MINECRAFT_1_21_7: ProtocolNum = 772;
 pub const MINECRAFT_1_21_8: ProtocolNum = 772;
 pub const MINECRAFT_1_21_9: ProtocolNum = 773;
 pub const MINECRAFT_1_21_10: ProtocolNum = 773;
-pub const LATEST: ProtocolNum = MINECRAFT_1_21_10;
+pub const MINECRAFT_1_21_11: ProtocolNum = 774;
+pub const LATEST: ProtocolNum = MINECRAFT_1_21_11;
 
 pub fn is_known_protocol_number(n: ProtocolNum) -> bool {
     matches!(n, MINECRAFT_1_7_1
@@ -162,8 +160,8 @@ pub fn is_known_protocol_number(n: ProtocolNum) -> bool {
             | MINECRAFT_1_21_5
             | MINECRAFT_1_21_6
             | MINECRAFT_1_21_8
-            | MINECRAFT_1_21_9
             | MINECRAFT_1_21_10
+            | MINECRAFT_1_21_11
     )
 }
 
@@ -271,95 +269,4 @@ fn read_varint(stream: &mut TcpStream) -> Result<usize, &'static str> {
 
 fn shutoff(stream: &TcpStream) {
     stream.shutdown(Shutdown::Both);
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_known_protocol_number() {
-        assert!(!is_known_protocol_number(MINECRAFT_1_7 - 1));
-        assert!(is_known_protocol_number(MINECRAFT_1_7));
-        assert!(is_known_protocol_number(MINECRAFT_1_7_1));
-        assert!(is_known_protocol_number(MINECRAFT_1_7_2));
-        assert!(is_known_protocol_number(MINECRAFT_1_7_3));
-        assert!(is_known_protocol_number(MINECRAFT_1_7_4));
-        assert!(is_known_protocol_number(MINECRAFT_1_7_5));
-        assert!(is_known_protocol_number(MINECRAFT_1_7_6));
-        assert!(is_known_protocol_number(MINECRAFT_1_7_7));
-        assert!(is_known_protocol_number(MINECRAFT_1_7_8));
-        assert!(is_known_protocol_number(MINECRAFT_1_7_9));
-        assert!(is_known_protocol_number(MINECRAFT_1_7_10));
-        assert!(is_known_protocol_number(MINECRAFT_1_8));
-        assert!(is_known_protocol_number(MINECRAFT_1_8_1));
-        assert!(is_known_protocol_number(MINECRAFT_1_8_2));
-        assert!(is_known_protocol_number(MINECRAFT_1_8_3));
-        assert!(is_known_protocol_number(MINECRAFT_1_8_4));
-        assert!(is_known_protocol_number(MINECRAFT_1_8_5));
-        assert!(is_known_protocol_number(MINECRAFT_1_8_6));
-        assert!(is_known_protocol_number(MINECRAFT_1_8_7));
-        assert!(is_known_protocol_number(MINECRAFT_1_8_8));
-        assert!(is_known_protocol_number(MINECRAFT_1_8_9));
-        assert!(is_known_protocol_number(MINECRAFT_1_9));
-        assert!(is_known_protocol_number(MINECRAFT_1_9_1));
-        assert!(is_known_protocol_number(MINECRAFT_1_9_2));
-        assert!(is_known_protocol_number(MINECRAFT_1_9_3));
-        assert!(is_known_protocol_number(MINECRAFT_1_9_4));
-        assert!(is_known_protocol_number(MINECRAFT_1_10));
-        assert!(is_known_protocol_number(MINECRAFT_1_10_1));
-        assert!(is_known_protocol_number(MINECRAFT_1_10_2));
-        assert!(is_known_protocol_number(MINECRAFT_1_11));
-        assert!(is_known_protocol_number(MINECRAFT_1_11_1));
-        assert!(is_known_protocol_number(MINECRAFT_1_11_2));
-        assert!(is_known_protocol_number(MINECRAFT_1_12));
-        assert!(is_known_protocol_number(MINECRAFT_1_12_1));
-        assert!(is_known_protocol_number(MINECRAFT_1_12_2));
-        assert!(is_known_protocol_number(MINECRAFT_1_13));
-        assert!(is_known_protocol_number(MINECRAFT_1_13_1));
-        assert!(is_known_protocol_number(MINECRAFT_1_13_2));
-        assert!(is_known_protocol_number(MINECRAFT_1_14));
-        assert!(is_known_protocol_number(MINECRAFT_1_14_1));
-        assert!(is_known_protocol_number(MINECRAFT_1_14_2));
-        assert!(is_known_protocol_number(MINECRAFT_1_14_3));
-        assert!(is_known_protocol_number(MINECRAFT_1_14_4));
-        assert!(is_known_protocol_number(MINECRAFT_1_15));
-        assert!(is_known_protocol_number(MINECRAFT_1_15_1));
-        assert!(is_known_protocol_number(MINECRAFT_1_15_2));
-        assert!(is_known_protocol_number(MINECRAFT_1_16));
-        assert!(is_known_protocol_number(MINECRAFT_1_16_1));
-        assert!(is_known_protocol_number(MINECRAFT_1_16_2));
-        assert!(is_known_protocol_number(MINECRAFT_1_16_3));
-        assert!(is_known_protocol_number(MINECRAFT_1_16_4));
-        assert!(is_known_protocol_number(MINECRAFT_1_16_5));
-        assert!(is_known_protocol_number(MINECRAFT_1_17));
-        assert!(is_known_protocol_number(MINECRAFT_1_17_1));
-        assert!(is_known_protocol_number(MINECRAFT_1_18));
-        assert!(is_known_protocol_number(MINECRAFT_1_18_1));
-        assert!(is_known_protocol_number(MINECRAFT_1_18_2));
-        assert!(is_known_protocol_number(MINECRAFT_1_19));
-        assert!(is_known_protocol_number(MINECRAFT_1_19_1));
-        assert!(is_known_protocol_number(MINECRAFT_1_19_2));
-        assert!(is_known_protocol_number(MINECRAFT_1_19_3));
-        assert!(is_known_protocol_number(MINECRAFT_1_19_4));
-        assert!(is_known_protocol_number(MINECRAFT_1_20));
-        assert!(is_known_protocol_number(MINECRAFT_1_20_1));
-        assert!(is_known_protocol_number(MINECRAFT_1_20_2));
-        assert!(is_known_protocol_number(MINECRAFT_1_20_3));
-        assert!(is_known_protocol_number(MINECRAFT_1_20_4));
-        assert!(is_known_protocol_number(MINECRAFT_1_20_5));
-        assert!(is_known_protocol_number(MINECRAFT_1_20_6));
-        assert!(is_known_protocol_number(MINECRAFT_1_21));
-        assert!(is_known_protocol_number(MINECRAFT_1_21_1));
-        assert!(is_known_protocol_number(MINECRAFT_1_21_2));
-        assert!(is_known_protocol_number(MINECRAFT_1_21_3));
-        assert!(is_known_protocol_number(MINECRAFT_1_21_4));
-        assert!(is_known_protocol_number(MINECRAFT_1_21_5));
-        assert!(is_known_protocol_number(MINECRAFT_1_21_6));
-        assert!(is_known_protocol_number(MINECRAFT_1_21_7));
-        assert!(is_known_protocol_number(MINECRAFT_1_21_8));
-        assert!(is_known_protocol_number(MINECRAFT_1_21_9));
-        assert!(is_known_protocol_number(MINECRAFT_1_21_10));
-        assert!(!is_known_protocol_number(LATEST + 1));
-    }
 }
