@@ -47,7 +47,7 @@ jobs:
       contents: read
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup Rust
         uses: actions-rust-lang/setup-rust-toolchain@v1
@@ -66,10 +66,9 @@ jobs:
         uses: livewing/lcov-job-summary@v1.2.0
         with:
           lcov: ./lcov.info
-        continue-on-error: true
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: build-and-test-${{ github.run_id }}-${{ github.run_attempt }}-${{ matrix.runner_label }}
           path: |
@@ -78,4 +77,3 @@ jobs:
             ./lcov.info
           retention-days: 1
           overwrite: true
-        continue-on-error: true

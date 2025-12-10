@@ -1,8 +1,8 @@
 use std::io::{stdout, Write};
 
-use clap::{ArgAction, command, Parser};
+use clap::{ArgAction, Parser};
 
-use crate::protocol::{DEFAULT_PORT, MINECRAFT_1_8, ping, ProtocolNum};
+use crate::protocol::{ping, ProtocolNum, DEFAULT_PORT, MINECRAFT_1_8};
 
 mod protocol;
 mod packet;
