@@ -1,4 +1,4 @@
-use rolling_glass::*;
+use rolling_glass::protocol::*;
 
 #[test]
 fn test_protocol_numbers() {

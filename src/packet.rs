@@ -5,10 +5,10 @@ use flashlight::create_varint;
 use crate::protocol::ProtocolNum;
 
 fn packet_raw_content_add_varint_length(packet_content: &mut Vec<u8>) {
-    packet_content.splice(0..0 , create_varint(packet_content.len() as i32));
+    packet_content.splice(0..0, create_varint(packet_content.len() as i32));
 }
 
-pub fn compose_handshake_packet(host: &String, port: u16, protocol: ProtocolNum) -> Vec<u8> {
+pub fn compose_handshake_packet(host: &str, port: u16, protocol: ProtocolNum) -> Vec<u8> {
     let host_strlen = host.len();
     let mut host_strlen_varint = create_varint(host_strlen as i32);
     let host_strlen_varint_bytelen = host_strlen_varint.len();
@@ -18,7 +18,8 @@ pub fn compose_handshake_packet(host: &String, port: u16, protocol: ProtocolNum)
 
     let handshake_content_len = 1 /* Packet ID */ + protocol_varint_bytelen + host_strlen_varint_bytelen + host_strlen + 2 + 1 /* Port number. State number. */;
     let mut handshake_content_len_as_varint = create_varint(handshake_content_len as i32);
-    let mut content: Vec<u8> = Vec::with_capacity(handshake_content_len + handshake_content_len_as_varint.len());
+    let mut content: Vec<u8> =
+        Vec::with_capacity(handshake_content_len + handshake_content_len_as_varint.len());
 
     content.append(&mut handshake_content_len_as_varint);
     content.push(0x00);
@@ -70,13 +71,24 @@ mod tests {
 
     #[test]
     fn test_compose_handshake_packet() {
-        let mut t: Vec<u8> = vec![0x00, 47, 9, 0x6C, 0x6F, 0x63, 0x61, 0x6C, 0x68, 0x6F, 0x73, 0x74, 0xFF, 0xFE, 0x01];
+        let mut t: Vec<u8> = vec![
+            0x00, 47, 9, 0x6C, 0x6F, 0x63, 0x61, 0x6C, 0x68, 0x6F, 0x73, 0x74, 0xFF, 0xFE, 0x01,
+        ];
         packet_raw_content_add_varint_length(&mut t);
-        assert_eq!(t, compose_handshake_packet(&"localhost".to_string(), 65534, MINECRAFT_1_8));
+        assert_eq!(
+            t,
+            compose_handshake_packet(&"localhost".to_string(), 65534, MINECRAFT_1_8)
+        );
 
-        let mut t: Vec<u8> = vec![0x00, 132, 6, 14, 0x6D, 0x63, 0x2E, 0x68, 0x79, 0x70, 0x69, 0x78, 0x65, 0x6C, 0x2E, 0x6E, 0x65, 0x74, 0x63, 0xDD, 0x01];
+        let mut t: Vec<u8> = vec![
+            0x00, 132, 6, 14, 0x6D, 0x63, 0x2E, 0x68, 0x79, 0x70, 0x69, 0x78, 0x65, 0x6C, 0x2E,
+            0x6E, 0x65, 0x74, 0x63, 0xDD, 0x01,
+        ];
         packet_raw_content_add_varint_length(&mut t);
-        assert_eq!(t, compose_handshake_packet(&"mc.hypixel.net".to_string(), 25565, MINECRAFT_1_21_8));
+        assert_eq!(
+            t,
+            compose_handshake_packet(&"mc.hypixel.net".to_string(), 25565, MINECRAFT_1_21_8)
+        );
     }
 
     #[test]

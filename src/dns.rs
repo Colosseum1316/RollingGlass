@@ -11,16 +11,14 @@ use crate::protocol::DEFAULT_PORT;
 
 fn get_resolver() -> &'static Resolver<TokioConnectionProvider> {
     static RESOLVER: OnceLock<Resolver<TokioConnectionProvider>> = OnceLock::new();
-    RESOLVER.get_or_init(|| {
-       Resolver::builder_tokio().unwrap().build()
-    })
+    RESOLVER.get_or_init(|| Resolver::builder_tokio().unwrap().build())
 }
 
 async fn resolve_ipv4(host: &str) -> Vec<Ipv4Addr> {
     let mut ips = Vec::new();
     let res = Resolver::ipv4_lookup(get_resolver(), host).await;
     if res.is_err() {
-        return ips
+        return ips;
     }
     let res = res.unwrap();
     res.iter().for_each(|a_rec| {
@@ -47,18 +45,18 @@ async fn resolve_srv(host: &str) -> Vec<(Ipv4Addr, u16)> {
     ips
 }
 
-pub async fn resolve(host: &str, port: u16) -> Result<Vec<(Ipv4Addr, u16)>, String> {
+pub async fn resolve(host: &str, port: u16) -> Result<Vec<(Ipv4Addr, u16)>, &'static str> {
     let res = IpAddr::from_str(host);
     if let Ok(res_ip) = res {
         return match res_ip {
-            IpAddr::V4(res4) => { Ok(vec![(res4, port)]) },
-            IpAddr::V6(_) => { Err("IPv6 not supported".to_string()) }
-        }
+            IpAddr::V4(res4) => Ok(vec![(res4, port)]),
+            IpAddr::V6(_) => Err("IPv6 not supported"),
+        };
     }
     if port == DEFAULT_PORT {
         let res = resolve_srv(host).await;
         if !res.is_empty() {
-            return Ok(res)
+            return Ok(res);
         }
     }
     let res4 = resolve_ipv4(host).await;
@@ -67,7 +65,7 @@ pub async fn resolve(host: &str, port: u16) -> Result<Vec<(Ipv4Addr, u16)>, Stri
         res.push((*v, port));
     });
     if res.is_empty() {
-        return Err(format!("Cannot resolve \"{host}\""))
+        return Err("Unknown host");
     }
     Ok(res)
 }
