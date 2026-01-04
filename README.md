@@ -1,13 +1,16 @@
+# RollingGlass
+
+## Usage
+
 ```
 Minecraft Server List Ping tool
 
-Usage: rolling_glass [OPTIONS] --host <HOST>
+Usage: rolling_glass [OPTIONS] --address <ADDRESS>
 
 Options:
-      --help                 Print this help information
-  -h, --host <HOST>          Server host
-      --fakehost <FAKEHOST>  
-  -p, --port <PORT>          Server port [default: 25565]
-      --protocol <PROTOCOL>  Protocol number [default: 47]
-      --timeout <TIMEOUT>    Connection timeout in seconds [default: 5]
+  -h, --help                                   Print this help information
+  -a, --address <ADDRESS>                      Server address
+  -f, --fakehost <FAKEHOST>                    
+  -m, --minecraft-version <MINECRAFT_VERSION>  [default: 1.8]
+      --timeout <TIMEOUT>                      Connection timeout in seconds [default: 5]
 ```

@@ -53,27 +53,16 @@ jobs:
         uses: actions-rust-lang/setup-rust-toolchain@v1
         with:
           toolchain: stable
-          cache: false
+          cache: true
           override: true
 
       - name: Install cargos
         run: cargo install cargo-tarpaulin
 
-      - name: Run test
-        run: make
+      - name: Run
+        run: make ci
 
       - name: Write job summary
         uses: livewing/lcov-job-summary@v1.2.0
         with:
           lcov: ./lcov.info
-
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v5
-        with:
-          name: build-and-test-${{ github.run_id }}-${{ github.run_attempt }}-${{ matrix.runner_label }}
-          path: |
-            ./target/debug
-            ./target/release
-            ./lcov.info
-          retention-days: 1
-          overwrite: true

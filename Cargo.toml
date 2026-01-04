@@ -8,5 +8,6 @@ license-file = "LICENSE"
 [dependencies]
 flashlight = { git = "https://github.com/Colosseum1316/Flashlight.git", rev = "b425e06e12bba677eb8037273fa812ce91c16ce4" }
 hickory-resolver = "0.25.2"
-tokio = "1.48.0"
-clap = { version = "4.5.53", features = ["derive"] }
+tokio = "1.49.0"
+clap = { version = "4.5.54", features = ["derive"] }
+once_cell = "1.21.3"

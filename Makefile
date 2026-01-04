@@ -1,21 +1,44 @@
+CARGO ?= cargo
+PROFILE ?= release
+FEATURES ?= --all-features
+
+CLIPPY_FLAGS = $(FEATURES) -- -D warnings
+TARPAULIN_FLAGS = --run-types AllTargets --out lcov --out stdout
+
+.PHONY: all build test lint lint-fix fmt fmt-check clean ci help
+
 all: lint test build
 
-.PHONY: build
 build:
-	cargo build --release
+	$(CARGO) build --$(PROFILE)
 
-.PHONY: test
 test:
-	cargo tarpaulin --release --run-types AllTargets --out lcov --out stdout
+	$(CARGO) tarpaulin --$(PROFILE) $(TARPAULIN_FLAGS)
 
-.PHONY: lint
 lint:
-	cargo clippy --all-features -- --deny warnings
+	$(CARGO) clippy $(CLIPPY_FLAGS)
 
-.PHONY: lint-fix
 lint-fix:
-	cargo clippy --all-features --fix
+	$(CARGO) clippy $(FEATURES) --fix
 
-.PHONY: clean
+fmt:
+	$(CARGO) fmt
+
+fmt-check:
+	$(CARGO) fmt -- --check
+
 clean:
-	cargo clean
+	$(CARGO) clean
+
+ci: fmt-check lint test build
+
+help:
+	@echo "Targets:"
+	@echo "  build       Build project ($(PROFILE))"
+	@echo "  test        Run tests with tarpaulin"
+	@echo "  lint        Run clippy (deny warnings)"
+	@echo "  lint-fix    Auto-fix clippy warnings"
+	@echo "  fmt         Format code"
+	@echo "  fmt-check   Check formatting"
+	@echo "  clean       Clean build artifacts"
+	@echo "  ci          Run all CI checks"
